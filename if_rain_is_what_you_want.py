@@ -17,6 +17,12 @@ import time as t
 #         None
 
 
+def upload_file(s3, file, bucket):
+        print(f'uploading: {file}......')
+        s3.upload_file(file)
+        print('uploaded!')
+
+
 def list_buckets(s3) -> list:
         response = s3.list_buckets()['Buckets']
         buckets = []
@@ -77,13 +83,17 @@ if __name__ == '__main__':
         parser = argparse.ArgumentParser()
         parser.add_argument('--target', help='required for finding s3 bucket', type=str)
         parser.add_argument('--key_id', help='access key, not required', type=str, required=False)
-        parser.add_argument('--mode', help='1 for scanning and listing bucket contents, 2 for dumping all contents of data. default is 1', default=1, type=int)
+        parser.add_argument('--mode', help='1 for scanning and listing bucket contents, 2 for dumping all contents of data, 3 is for uploading files to a bucket. default is 1', default=1, type=int)
         parser.add_argument('--key_secret', help='access key secret, not required', type=str, required=False)
+        parser.add_argument('--file_to_upload', help='file to upload for mode 3', required=False)
+        parser.add_argument('--bucket', help='specify bucket to upload file to.', required=False)
         args = parser.parse_args()
         target = args.target
         key_id = args.key_id
         mode = args.mode
         key_secret = args.key_secret
+        file = args.file_to_upload
+        target_bucket = args.bucket
         if not target:
                 print("no target found! EXITING....")
                 exit()
@@ -118,6 +128,16 @@ if __name__ == '__main__':
                 for bucket in buckets:
                         contents = list_bucket_contents(bucket, s3)
                         download_contents_of_bucket(bucket, s3, contents)
+        
+        elif mode == 3:
+                bucket = target_bucket
+                if keys == 0:
+                        s3 = boto3.client('s3', endpoint_url=f'http://{target}')
+                else:
+                        s3 = s3session.client('s3')
+                upload_file(s3, file, bucket)
+                        
+                        
         else:
                 print('invalid mode found, exiting.......')
                 exit()
