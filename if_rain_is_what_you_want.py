@@ -99,7 +99,7 @@ if __name__ == '__main__':
                 exit()
         if key_id and key_secret:
                 s3session = boto3.Session(aws_access_key_id=key_id, aws_secret_access_key=key_secret)
-                s3 = s3session.client('s3')
+                s3 = s3session.client('s3', endpoint_url=f'http://{target}')
                 keys = 1
         else:
                 print('missing secret key or access key, continuing.....')
@@ -112,7 +112,7 @@ if __name__ == '__main__':
                 if keys == 0:
                         s3 = boto3.resource('s3', endpoint_url=f'http://{target}')
                 else:
-                        s3 = s3session.resource('s3')
+                        s3 = s3session.resource('s3', endpoint_url=f'http://{target}')
                 
                 for bucket in buckets:
                 	contents = list_bucket_contents(bucket, s3)
@@ -122,7 +122,7 @@ if __name__ == '__main__':
                 if keys == 0:
                         s3 = boto3.resource('s3', endpoint_url=f'http://{target}')
                 else:
-                        s3 = s3session.resource('s3')
+                        s3 = s3session.resource('s3', endpoint_url=f'http://{target}')
                 
                 
                 for bucket in buckets:
@@ -134,7 +134,7 @@ if __name__ == '__main__':
                 if keys == 0:
                         s3 = boto3.client('s3', endpoint_url=f'http://{target}')
                 else:
-                        s3 = s3session.client('s3')
+                        s3 = s3session.client('s3', endpoint_url=f'http://{target}')
                 upload_file(s3, file, bucket)
                         
                         
