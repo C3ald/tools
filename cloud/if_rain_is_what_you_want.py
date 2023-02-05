@@ -46,9 +46,9 @@ def list_buckets(s3) -> list:
 
 
 def list_bucket_contents(bucket, s3):
+        bucket = s3.Bucket(bucket)
         print('-----------------------------------------')
         print(f'contents of bucket: {bucket}')
-        bucket = s3.Bucket(bucket)
         contents = []
         for bucket_obj in bucket.objects.all():
                 print(bucket_obj.key)
