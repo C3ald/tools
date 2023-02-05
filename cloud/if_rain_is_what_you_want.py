@@ -148,7 +148,7 @@ if __name__ == '__main__':
                 upload_file(s3, file, bucket)
                         
         elif mode == 0:
-                bucket_force(s3)
+                bucket_forcer(s3)
                       
         else:
                 print('invalid mode found, exiting.......')
