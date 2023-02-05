@@ -16,6 +16,16 @@ import time as t
 #     except r.exceptions.ConnectionError:
 #         None
 
+def bucket_forcer(s3):
+        print('attempting to brute force buckets.......')
+        wordlist = open('./wordlists/bucket_names.txt', 'r').readlines()
+        for word in wordlist:
+                try:
+                        list_bucket_contents(bucket=word, s3=s3)
+                except:
+                        None
+                #t.sleep(0.1)
+        print('brute force done!')
 
 def upload_file(s3, file, bucket):
         print(f'uploading: {file}......')
@@ -83,7 +93,7 @@ if __name__ == '__main__':
         parser = argparse.ArgumentParser()
         parser.add_argument('--target', help='required for finding s3 bucket', type=str)
         parser.add_argument('--key_id', help='access key, not required', type=str, required=False)
-        parser.add_argument('--mode', help='1 for scanning and listing bucket contents, 2 for dumping all contents of data, 3 is for uploading files to a bucket. default is 1', default=1, type=int)
+        parser.add_argument('--mode', help='0 is for brute forcing buckets, 1 for scanning and listing bucket contents, 2 for dumping all contents of data, 3 is for uploading files to a bucket. default is 1', default=1, type=int)
         parser.add_argument('--key_secret', help='access key secret, not required', type=str, required=False)
         parser.add_argument('--file_to_upload', help='file to upload for mode 3', required=False)
         parser.add_argument('--bucket', help='specify bucket to upload file to.', required=False)
@@ -137,7 +147,9 @@ if __name__ == '__main__':
                         s3 = s3session.client('s3', endpoint_url=f'http://{target}')
                 upload_file(s3, file, bucket)
                         
-                        
+        elif mode == 0:
+                bucket_force(s3)
+                      
         else:
                 print('invalid mode found, exiting.......')
                 exit()
